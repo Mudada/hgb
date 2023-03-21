@@ -24,9 +24,10 @@ def zoom [url: string] {
     ($t | par-each { |v|
         let url = get-url $v
         let methods = get-methods $v
-        let operation_ids = ($methods | par-each {|m| get-operation-ids $m})
+        let operation_ids = ($methods | par-each {|m| get-operation-ids ($v | get val | get $m)})
         let zipped = ($methods | zip $operation_ids)
-        $zipped | par-each { |z| $z | append $url }
+        let final = ($zipped | par-each { |z| $z | append $url })
+        {method: ($final | get 0) operation-id: ($final | get 1) route: ($final | get 2)}
     })
 }
 
